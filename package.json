@@ -1,0 +1,15 @@
+{
+    "name": "triviadmin",
+    "version": "1.0.0",
+    "description": "TriviAdmin is a trivia db management application for the trivia host.",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "Jordan Layton",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.17.1"
+    }
+}

@@ -1,0 +1,245 @@
+{
+    /* Visit https://firebase.google.com/docs/database/security to learn more about security rules. */
+    "rules": {
+        ".read": true,
+        ".write": true,
+        "UsedGeek": {
+            ".indexOn": [
+                "Category",
+                "querybase~~Q2F0ZWdvcnk=",
+                "querybase~~UG9pbnRz",
+                "querybase~~Um91bmQ=",
+                "querybase~~Q2F0ZWdvcnl+flJvdW5k"
+            ]
+        },
+        "GeekdomSorted": {
+            "Anime": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Board Games": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Cartoons": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "DC": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Disney": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "GoT": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Harry Potter": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "LotR": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Marvel": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Name The Thing": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Star Wars": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Video Games": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Mixed Bag": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            }
+        },
+        "GeneralSorted": {
+            "90s": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Film": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Geography": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "History": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Literature": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Music": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Name The Thing": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Nature": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Science": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Space": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Sports": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Television": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            }
+        }
+    }
+}
