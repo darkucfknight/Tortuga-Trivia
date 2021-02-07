@@ -4,7 +4,7 @@
     "description": "TriviAdmin is a trivia db management application for the trivia host.",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "start": "node ."
     },
     "keywords": [],
     "author": "Jordan Layton",

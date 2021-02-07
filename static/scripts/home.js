@@ -564,6 +564,7 @@ function getAllQuestion() {
     });
 }
 
+// TODO fix markused with duplicate names
 function markUsed() {
     var cat = document.getElementById('catDrop').value;
     var round = document.getElementById('roundDrop').value;
