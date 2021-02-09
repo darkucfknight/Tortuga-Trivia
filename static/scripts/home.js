@@ -87,12 +87,20 @@ function googleSignout() {
         );
 }
 
+function waitThenDo(waitVarName, waitFunc) {
+    if (typeof window[waitVarName] !== 'undefined') {
+        waitFunc();
+    } else {
+        setTimeout(waitThenDo(waitVarName, waitFunc), 100);
+    }
+}
+
 $(document).ready(function () {
     console.log('start');
     getTriviaTypes();
     console.log('mid');
     console.log('end');
-    waitToSwitchGameMode();
+    waitThenDo('gameMode', switchGameMode);
 });
 
 function getTriviaTypes() {
@@ -110,22 +118,18 @@ function getTriviaTypes() {
 }
 
 function getCategories() {
-    if (typeof gameMode !== 'undefined') {
-        FIREBASE_REF.child(gameMode + 'Sorted').once('value', (snapshot) => {
-            categories = [];
-            snapshot.forEach(function (child) {
-                if (child !== undefined) {
-                    categories.push(child.key);
-                }
-            });
+    FIREBASE_REF.child(gameMode + 'Sorted').once('value', (snapshot) => {
+        categories = [];
+        snapshot.forEach(function (child) {
+            if (child !== undefined) {
+                categories.push(child.key);
+            }
         });
-    } else {
-        setTimeout(getCategories, 100);
-    }
+    });
 }
 
 function waitToInitBasePanel() {
-    if (typeof categories !== 'undefined' && categories.length > 0) {
+    if (typeof categories !== 'undefined') {
         initBasePanel();
     } else {
         setTimeout(waitToInitBasePanel, 100);
@@ -262,21 +266,13 @@ function switchAdminMode() {
     }
 }
 
-function waitToSwitchGameMode() {
-    if (typeof gameMode !== 'undefined') {
-        switchGameMode();
-    } else {
-        setTimeout(waitToSwitchGameMode, 100);
-    }
-}
 function switchGameMode() {
     clearMetricsTable();
     nextGameModeIdx = gameModes.indexOf(gameMode) + 1;
     gameMode =
         gameModes[nextGameModeIdx > gameModes.length - 1 ? 0 : nextGameModeIdx];
-    console.log(gameMode);
     $('#switchGameMode').html(gameMode);
-    categories = getCategories(gameMode);
+    categories = waitThenDo('gameMode', getCategories);
     currSortedRef = FIREBASE_REF.child(gameMode + 'Sorted');
     currSubRef = FIREBASE_REF.child(gameMode + 'Subcategories');
     waitToRecaclulateTotalGroups();
