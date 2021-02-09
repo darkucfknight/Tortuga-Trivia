@@ -1,42 +1,10 @@
 var adminMode = 'host';
-var gameMode = 'geek';
+var gameMode = undefined;
 var saveMode = 'create';
 
 var currQuestionKey = '';
 
-// TODO remove all this hardcoding and do a general improvement of this code all over :/
-
-var geekCategories = new Array();
-geekCategories[0] = 'Anime';
-geekCategories[1] = 'Board Games';
-geekCategories[2] = 'Cartoons';
-geekCategories[3] = 'DC';
-geekCategories[4] = 'Disney';
-geekCategories[5] = 'GoT';
-geekCategories[6] = 'Harry Potter';
-geekCategories[7] = 'LotR';
-geekCategories[8] = 'Marvel';
-geekCategories[9] = 'Name The Thing';
-geekCategories[10] = 'Star Wars';
-geekCategories[11] = 'Video Games';
-geekCategories[12] = 'Mixed Bag';
-
-var genCategories = new Array();
-genCategories[0] = '90s';
-genCategories[1] = 'Film';
-genCategories[2] = 'Geography';
-genCategories[3] = 'History';
-genCategories[4] = 'Literature';
-genCategories[5] = 'Music';
-genCategories[6] = 'Name The Thing';
-genCategories[7] = 'Nature';
-genCategories[8] = 'Science';
-genCategories[9] = 'Space';
-genCategories[10] = 'Sports';
-genCategories[11] = 'Television';
-
-var categories = new Array();
-categories = geekCategories;
+var categories = [];
 
 var roundValues = new Array();
 roundValues[0] = 1;
@@ -75,18 +43,12 @@ console.log(ruleString);*/
 
 const metrics = [];
 
-var totalGroups = categories.length * 2 + categories.length * 3;
+var totalGroups = null;
 
-const geekRef = firebase.database().ref().child('Geekdom');
-const geekSortedRef = firebase.database().ref().child('GeekdomSorted');
-const geekSubsRef = firebase.database().ref().child('GeekdomSubcategories');
-
-const genRef = firebase.database().ref().child('General');
-const genSortedRef = firebase.database().ref().child('GeneralSorted');
-const genSubsRef = firebase.database().ref().child('GeneralSubcategories');
-
-var currSortedRef = geekSortedRef;
-var currSubRef = geekSubsRef;
+const FIREBASE_REF = firebase.database().ref();
+let gameModes = [];
+var currSortedRef = null;
+var currSubRef = null;
 var provider = new firebase.auth.GoogleAuthProvider();
 
 function googleSignin() {
@@ -125,9 +87,52 @@ function googleSignout() {
         );
 }
 
-initBasePanel();
+$(document).ready(function () {
+    console.log('start');
+    getTriviaTypes();
+    console.log('mid');
+    console.log('end');
+    waitToSwitchGameMode();
+});
 
+function getTriviaTypes() {
+    gameModes = [];
+    FIREBASE_REF.once('value', (snapshot) => {
+        snapshot.forEach(function (child) {
+            key = child.key;
+            sortStrIndex = key.indexOf('Sorted');
+            if (sortStrIndex > 0) {
+                gameModes.push(key.substring(0, sortStrIndex));
+            }
+        });
+        gameMode = gameModes[0];
+    });
+}
+
+function getCategories() {
+    if (typeof gameMode !== 'undefined') {
+        FIREBASE_REF.child(gameMode + 'Sorted').once('value', (snapshot) => {
+            categories = [];
+            snapshot.forEach(function (child) {
+                if (child !== undefined) {
+                    categories.push(child.key);
+                }
+            });
+        });
+    } else {
+        setTimeout(getCategories, 100);
+    }
+}
+
+function waitToInitBasePanel() {
+    if (typeof categories !== 'undefined' && categories.length > 0) {
+        initBasePanel();
+    } else {
+        setTimeout(waitToInitBasePanel, 100);
+    }
+}
 function initBasePanel() {
+    console.log('init base panel');
     var catDrop = document.getElementById('catDrop');
     catDrop.innerHTML = '';
 
@@ -147,11 +152,10 @@ function getMetrics() {
     var callsCompleted = 0;
     var gameModeRef;
 
-    if (gameMode == 'geek') {
-        gameModeRef = firebase.database().ref().child('GeekdomSorted');
-    } else {
-        gameModeRef = firebase.database().ref().child('GeneralSorted');
-    }
+    gameModeRef = firebase
+        .database()
+        .ref()
+        .child(gameMode + 'Sorted');
 
     metrics.length = 0;
 
@@ -258,34 +262,39 @@ function switchAdminMode() {
     }
 }
 
-function switchGameMode() {
-    var gameModeTitle = document.getElementById('gameMode');
-
-    if (gameMode == 'geek') {
-        clearMetricsTable();
-        $('#switchGameMode').html('General');
-        categories = genCategories;
-        currSortedRef = genSortedRef;
-        currSubRef = genSubsRef;
-        recalculateTotalGroups();
-        gameMode = 'gen';
-        initBasePanel();
+function waitToSwitchGameMode() {
+    if (typeof gameMode !== 'undefined') {
+        switchGameMode();
     } else {
-        clearMetricsTable();
-        $('#switchGameMode').html('Geekdom');
-        categories = geekCategories;
-        currSortedRef = geekSortedRef;
-        currSubRef = geekSubsRef;
-        recalculateTotalGroups();
-        gameMode = 'geek';
-        initBasePanel();
+        setTimeout(waitToSwitchGameMode, 100);
     }
+}
+function switchGameMode() {
+    clearMetricsTable();
+    nextGameModeIdx = gameModes.indexOf(gameMode) + 1;
+    gameMode =
+        gameModes[nextGameModeIdx > gameModes.length - 1 ? 0 : nextGameModeIdx];
+    console.log(gameMode);
+    $('#switchGameMode').html(gameMode);
+    categories = getCategories(gameMode);
+    currSortedRef = FIREBASE_REF.child(gameMode + 'Sorted');
+    currSubRef = FIREBASE_REF.child(gameMode + 'Subcategories');
+    waitToRecaclulateTotalGroups();
+    waitToInitBasePanel();
 }
 
 function clearMetricsTable() {
     var metricsTable = document.getElementById('metricsTable');
     for (var i = metricsTable.rows.length - 1; i > 0; i--) {
         metricsTable.deleteRow(i);
+    }
+}
+
+function waitToRecaclulateTotalGroups() {
+    if (typeof categories !== 'undefined') {
+        recalculateTotalGroups();
+    } else {
+        setTimeout(waitToRecaclulateTotalGroups, 100);
     }
 }
 
