@@ -1,111 +1,41 @@
-var adminMode = 'host';
-var gameMode = undefined;
-var saveMode = 'create';
+let adminMode = 'host';
+let gameMode = undefined;
+let saveMode = 'create';
 
-var currQuestionKey = '';
+let viewUsed = true;
 
-var categories = [];
+let currQuestionKey = null;
 
-var roundValues = new Array();
+let categories = [];
+
+const roundValues = new Array();
 roundValues[0] = 1;
 roundValues[1] = 2;
 roundValues[2] = 3;
 
-var pointValues = new Array();
+const pointValues = new Array();
 pointValues[0] = 2;
 pointValues[1] = 3;
 pointValues[2] = 5;
 
-// Generate Firebase rules string
-/*let ruleString = '';
-let indentAmount = '      ';
-genCategories.forEach(function (cat) {
-    ruleString += indentAmount + '"' + cat + '" : {\n';
-    roundValues.forEach(function (round) {
-        ruleString += indentAmount + '  "' + round + '" : {';
-        if (round == 3) {
-            ruleString += '\n';
-            pointValues.forEach(function (point) {
-                ruleString +=
-                    indentAmount +
-                    '    "' +
-                    point +
-                    '":{".indexOn": "Used"},\n';
-            });
-            ruleString += indentAmount + '  },\n';
-        } else {
-            ruleString += '".indexOn": "Used"},\n';
-        }
-    });
-    ruleString += indentAmount + '},\n';
-});
-console.log(ruleString);*/
-
 const metrics = [];
 
-var totalGroups = null;
+let totalGroups = null;
 
 const FIREBASE_REF = firebase.database().ref();
 let gameModes = [];
-var currSortedRef = null;
-var currSubRef = null;
-var provider = new firebase.auth.GoogleAuthProvider();
+let currSortedRef = null;
+let currSubRef = null;
+let provider = new firebase.auth.GoogleAuthProvider();
 
-function googleSignin() {
-    firebase
-        .auth()
-
-        .signInWithPopup(provider)
-        .then(function (result) {
-            var token = result.credential.accessToken;
-            var user = result.user;
-
-            console.log(token);
-            console.log(user);
-        })
-        .catch(function (error) {
-            var errorCode = error.code;
-            var errorMessage = error.message;
-
-            console.log(error.code);
-            console.log(error.message);
-        });
-}
-
-function googleSignout() {
-    firebase
-        .auth()
-        .signOut()
-
-        .then(
-            function () {
-                console.log('Signout Succesfull');
-            },
-            function (error) {
-                console.log('Signout Failed');
-            }
-        );
-}
-
-function waitThenDo(waitVarName, waitFunc) {
-    if (typeof window[waitVarName] !== 'undefined') {
-        waitFunc();
-    } else {
-        setTimeout(waitThenDo(waitVarName, waitFunc), 100);
-    }
-}
-
-$(document).ready(function () {
-    console.log('start');
-    getTriviaTypes();
-    console.log('mid');
-    console.log('end');
-    waitThenDo('gameMode', switchGameMode);
+// Init Page
+getTriviaTypes().then(function () {
+    switchGameMode();
 });
 
 function getTriviaTypes() {
     gameModes = [];
-    FIREBASE_REF.once('value', (snapshot) => {
+    return FIREBASE_REF.once('value', (snapshot) => {
         snapshot.forEach(function (child) {
             key = child.key;
             sortStrIndex = key.indexOf('Sorted');
@@ -118,7 +48,7 @@ function getTriviaTypes() {
 }
 
 function getCategories() {
-    FIREBASE_REF.child(gameMode + 'Sorted').once('value', (snapshot) => {
+    return FIREBASE_REF.child(gameMode + 'Sorted').once('value', (snapshot) => {
         categories = [];
         snapshot.forEach(function (child) {
             if (child !== undefined) {
@@ -128,15 +58,7 @@ function getCategories() {
     });
 }
 
-function waitToInitBasePanel() {
-    if (typeof categories !== 'undefined') {
-        initBasePanel();
-    } else {
-        setTimeout(waitToInitBasePanel, 100);
-    }
-}
 function initBasePanel() {
-    console.log('init base panel');
     var catDrop = document.getElementById('catDrop');
     catDrop.innerHTML = '';
 
@@ -175,7 +97,7 @@ function getMetrics() {
                     var currMetricPointRef = currMetricRef.child(point);
                     var currMetricPointUnusedRef = currMetricPointRef
                         .orderByChild('Used')
-                        .equalTo(false);
+                        .equalTo(viewUsed);
                     currMetricPointUnusedRef
                         .once('value')
                         .then(function (snapshot) {
@@ -195,7 +117,7 @@ function getMetrics() {
             } else {
                 currMetricRef = currMetricRef
                     .orderByChild('Used')
-                    .equalTo(false);
+                    .equalTo(viewUsed);
                 currMetricRef.once('value').then(function (snapshot) {
                     callsCompleted++;
                     catMetrics.metrics.push(snapshot.numChildren());
@@ -268,29 +190,26 @@ function switchAdminMode() {
 
 function switchGameMode() {
     clearMetricsTable();
+    $('.questionDisplay').html('');
     nextGameModeIdx = gameModes.indexOf(gameMode) + 1;
     gameMode =
         gameModes[nextGameModeIdx > gameModes.length - 1 ? 0 : nextGameModeIdx];
     $('#switchGameMode').html(gameMode);
-    categories = waitThenDo('gameMode', getCategories);
-    currSortedRef = FIREBASE_REF.child(gameMode + 'Sorted');
-    currSubRef = FIREBASE_REF.child(gameMode + 'Subcategories');
-    waitToRecaclulateTotalGroups();
-    waitToInitBasePanel();
+    getCategories(gameMode)
+        .then(function () {
+            currSortedRef = FIREBASE_REF.child(gameMode + 'Sorted');
+            currSubRef = FIREBASE_REF.child(gameMode + 'Subcategories');
+            return recalculateTotalGroups();
+        })
+        .then(function () {
+            initBasePanel();
+        });
 }
 
 function clearMetricsTable() {
     var metricsTable = document.getElementById('metricsTable');
     for (var i = metricsTable.rows.length - 1; i > 0; i--) {
         metricsTable.deleteRow(i);
-    }
-}
-
-function waitToRecaclulateTotalGroups() {
-    if (typeof categories !== 'undefined') {
-        recalculateTotalGroups();
-    } else {
-        setTimeout(waitToRecaclulateTotalGroups, 100);
     }
 }
 
@@ -471,24 +390,17 @@ function createNewSubCat() {
 }
 
 function getQuestion() {
-    var cat = document.getElementById('catDrop').value;
-    var round = document.getElementById('roundDrop').value;
-    var point = document.getElementById('pointDrop').value;
+    var cat = $('#catDrop').val();
+    var round = $('#roundDrop').val();
+    var point = $('#pointDrop').val();
 
     var questionBlock = currSortedRef.child(cat).child(round);
-
-    // Clear fields so that there's no confusion
-    document.getElementById('question').innerHTML = '';
-    document.getElementById('choices').innerHTML = '';
-    document.getElementById('answer').innerHTML = '';
-    document.getElementById('explanation').innerHTML = '';
-    document.getElementById('source').innerHTML = '';
 
     if (round == 3) {
         questionBlock = questionBlock.child(point);
     }
 
-    questionBlock = questionBlock.orderByChild('Used').equalTo(false);
+    questionBlock = questionBlock.orderByChild('Used').equalTo(viewUsed);
 
     questionBlock.once('value').then(function (snapshot) {
         var i = 0;
@@ -496,36 +408,52 @@ function getQuestion() {
             alert('Nothing to select! Write more questions!');
         }
 
-        var randomQuestionNum = Math.floor(
+        let randomQuestionNum = Math.floor(
             Math.random() * snapshot.numChildren()
         );
+        console.log(snapshot.numChildren());
 
+        let prevData = null;
         snapshot.forEach(function (data) {
             if (i == randomQuestionNum) {
-                document.getElementById(
-                    'question'
-                ).innerHTML = data.val().Question;
-                document.getElementById(
-                    'choices'
-                ).innerHTML = data.val().Multiple_Choice;
-                document.getElementById('answer').innerHTML = data.val().Answer;
-                document.getElementById(
-                    'explanation'
-                ).innerHTML = data.val().Explanation;
-                document.getElementById('source').innerHTML = data.val().Source;
-
-                usedButton = document.getElementById('usedButton');
-                if (data.val().Used == '') {
-                    usedButton.innerHTML = 'Mark Used';
+                if (data.key == currQuestionKey) {
+                    if (snapshot.numChildren() === 1) {
+                        alert(
+                            'Already viewing only question for this selection. Write some more!'
+                        );
+                    } else if (i == snapshot.numChildren() - 1) {
+                        currQuestionKey = prevData.key;
+                        showQuestion(prevData);
+                    } else {
+                        randomQuestionNum += 1;
+                    }
                 } else {
-                    usedButton.innerHTML = 'Mark Unused';
+                    currQuestionKey = data.key;
+                    showQuestion(data);
                 }
-                usedButton.style.display = 'block';
             }
-
+            prevData = data;
             i++;
         });
     });
+}
+
+function showQuestion(data) {
+    // Clear fields so that there's no confusion
+    $('.questionDisplay').html('');
+    document.getElementById('question').innerHTML = data.val().Question;
+    document.getElementById('choices').innerHTML = data.val().Multiple_Choice;
+    document.getElementById('answer').innerHTML = data.val().Answer;
+    document.getElementById('explanation').innerHTML = data.val().Explanation;
+    document.getElementById('source').innerHTML = data.val().Source;
+
+    usedButton = document.getElementById('usedButton');
+    if (data.val().Used == '') {
+        usedButton.innerHTML = 'Mark Used';
+    } else {
+        usedButton.innerHTML = 'Mark Unused';
+    }
+    usedButton.style.display = 'block';
 }
 
 function getAllQuestion() {
@@ -545,12 +473,16 @@ function getAllQuestion() {
         allQtable.deleteRow(i);
     }
 
-    questionBlock = questionBlock.orderByChild('Used').equalTo(false);
+    questionBlock = questionBlock.orderByChild('Used').equalTo(viewUsed);
 
     questionBlock.once('value').then(function (snapshot) {
         var i = 0;
         if (!snapshot.exists()) {
-            alert('No Unused Questions! Write more questions!');
+            if (viewUsed) {
+                alert('No Used Questions! Use more questions!');
+            } else {
+                alert('No Unused Questions! Write more questions!');
+            }
         }
 
         snapshot.forEach(function (data) {
@@ -735,6 +667,36 @@ function resetToCreate() {
     $('#resetToCreate').hide();
 }
 
+function googleSignin() {
+    firebase
+        .auth()
+
+        .signInWithPopup(provider)
+        .then(function (result) {
+            var token = result.credential.accessToken;
+            var user = result.user;
+        })
+        .catch(function (error) {
+            var errorCode = error.code;
+            var errorMessage = error.message;
+        });
+}
+
+function googleSignout() {
+    firebase
+        .auth()
+        .signOut()
+
+        .then(
+            function () {
+                console.log('Signout Succesfull');
+            },
+            function (error) {
+                console.log('Signout Failed');
+            }
+        );
+}
+
 /*function addUsedFieldToSubCats() {
 		categories.forEach(function(cat) {
 			var currSubCatRef = currSubRef.child(cat);
@@ -795,3 +757,28 @@ function resetToCreate() {
 			});
 		});
 	}*/
+// Generate Firebase rules string
+/*function generateCategoryFirebaseRules() {
+    let ruleString = '';
+    let indentAmount = '      ';
+    categories.forEach(function (cat) {
+        ruleString += indentAmount + '"' + cat + '" : {\n';
+        roundValues.forEach(function (round) {
+            ruleString += indentAmount + '  "' + round + '" : {';
+            if (round == 3) {
+                ruleString += '\n';
+                pointValues.forEach(function (point) {
+                    ruleString +=
+                        indentAmount +
+                        '    "' +
+                        point +
+                        '":{".indexOn": "Used"},\n';
+                });
+                ruleString += indentAmount + '  },\n';
+            } else {
+                ruleString += '".indexOn": "Used"},\n';
+            }
+        });
+        ruleString += indentAmount + '},\n';
+    });
+}*/

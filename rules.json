@@ -2,7 +2,7 @@
     /* Visit https://firebase.google.com/docs/database/security to learn more about security rules. */
     "rules": {
         ".read": true,
-        ".write": true,
+        ".write": "auth.uid == 'ID_GOES_HERE'",
         "UsedGeek": {
             ".indexOn": [
                 "Category",
@@ -13,6 +13,7 @@
             ]
         },
         "GeekdomSorted": {
+            ".read": "auth.uid == 'ID_GOES_HERE'",
             "Anime": {
                 "1": { ".indexOn": "Used" },
                 "2": { ".indexOn": "Used" },
@@ -132,6 +133,7 @@
             }
         },
         "GeneralSorted": {
+            ".read": "auth.uid == 'ID_GOES_HERE'",
             "90s": {
                 "1": { ".indexOn": "Used" },
                 "2": { ".indexOn": "Used" },
@@ -232,6 +234,117 @@
                 }
             },
             "Television": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            }
+        },
+        "OfficeSorted": {
+            ".read": "auth.uid == 'ID_GOES_HERE'",
+            "Celebrity Characters": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Dwight": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Engagement": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Jim": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Management": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Meetings": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Michael": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Pam": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Pranks": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Quotes": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Relationships": {
+                "1": { ".indexOn": "Used" },
+                "2": { ".indexOn": "Used" },
+                "3": {
+                    "2": { ".indexOn": "Used" },
+                    "3": { ".indexOn": "Used" },
+                    "5": { ".indexOn": "Used" }
+                }
+            },
+            "Side Characters": {
                 "1": { ".indexOn": "Used" },
                 "2": { ".indexOn": "Used" },
                 "3": {
