@@ -30,7 +30,7 @@ let provider = new firebase.auth.GoogleAuthProvider();
 
 // Init Page
 getTriviaTypes().then(function () {
-    switchGameMode();
+    refreshGameMode(true);
 });
 
 function getTriviaTypes() {
@@ -161,6 +161,12 @@ function drawMetrics() {
     });
 }
 
+function switchUsedMode() {
+    viewUsed = !viewUsed;
+    $('#switchUsedMode').html(viewUsed ? 'Used' : 'Unused');
+    refreshGameMode(false);
+}
+
 function switchAdminMode() {
     var adminModeTitle = document.getElementById('adminMode');
     var getQuestionButton = document.getElementById('getQ');
@@ -188,13 +194,20 @@ function switchAdminMode() {
     }
 }
 
-function switchGameMode() {
-    clearMetricsTable();
-    $('.questionDisplay').html('');
+function advanceGameMode() {
     nextGameModeIdx = gameModes.indexOf(gameMode) + 1;
     gameMode =
         gameModes[nextGameModeIdx > gameModes.length - 1 ? 0 : nextGameModeIdx];
     $('#switchGameMode').html(gameMode);
+}
+
+function refreshGameMode(advance) {
+    clearMetricsTable();
+    if (advance) {
+        advanceGameMode();
+    }
+    $('.questionDisplay').html('');
+
     getCategories(gameMode)
         .then(function () {
             currSortedRef = FIREBASE_REF.child(gameMode + 'Sorted');
@@ -411,7 +424,6 @@ function getQuestion() {
         let randomQuestionNum = Math.floor(
             Math.random() * snapshot.numChildren()
         );
-        console.log(snapshot.numChildren());
 
         let prevData = null;
         snapshot.forEach(function (data) {
@@ -675,6 +687,9 @@ function googleSignin() {
         .then(function (result) {
             var token = result.credential.accessToken;
             var user = result.user;
+            getTriviaTypes().then(function () {
+                refreshGameMode(true);
+            });
         })
         .catch(function (error) {
             var errorCode = error.code;
