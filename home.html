@@ -1,160 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase.js"></script>
-    <script>
-        // Initialize Firebase
-        var config = {
-        apiKey: "AIzaSyDr_5AIyUZ1JoTleDfUsyxGh6S6JcYuEMQ",
-        authDomain: "tortuga-trivia-game.firebaseapp.com",
-        databaseURL: "https://tortuga-trivia-game.firebaseio.com",
-        projectId: "tortuga-trivia-game",
-        storageBucket: "tortuga-trivia-game.appspot.com",
-        messagingSenderId: "443962420647"
-        };
-        firebase.initializeApp(config);
-    </script>
-    <script src="https://www.gstatic.com/firebasejs/ui/4.7.3/firebase-ui-auth.js"></script>
-    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.7.3/firebase-ui-auth.css" />
-    <link rel="stylesheet" type="text/css" href="static/css/home.css" />
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase.js"></script>
+        <script>
+            // Initialize Firebase
+            var config = {
+                apiKey: 'AIzaSyDr_5AIyUZ1JoTleDfUsyxGh6S6JcYuEMQ',
+                authDomain: 'tortuga-trivia-game.firebaseapp.com',
+                databaseURL: 'https://tortuga-trivia-game.firebaseio.com',
+                projectId: 'tortuga-trivia-game',
+                storageBucket: 'tortuga-trivia-game.appspot.com',
+                messagingSenderId: '443962420647',
+            };
+            firebase.initializeApp(config);
+        </script>
+        <script src="https://www.gstatic.com/firebasejs/ui/4.7.3/firebase-ui-auth.js"></script>
+        <link
+            href="https://fonts.googleapis.com/icon?family=Material+Icons"
+            rel="stylesheet"
+        />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
+            crossorigin="anonymous"
+        />
+        <link
+            type="text/css"
+            rel="stylesheet"
+            href="https://www.gstatic.com/firebasejs/ui/4.7.3/firebase-ui-auth.css"
+        />
+        <link rel="stylesheet" type="text/css" href="static/css/home.css" />
+    </head>
 
-</head>
+    <body>
+        <nav class="navbar navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <img
+                        src="/static/img/LOGO.png"
+                        alt=""
+                        width="30"
+                        height="30"
+                        class="d-inline-block align-top"
+                    />
+                    TriviAdmin
+                </a>
+                <div
+                    id="sign-in-button"
+                    data-bs-target="#sign-out-confirm-modal"
+                >
+                    <span id="profile-icon" class="material-icons"
+                        >account_circle</span
+                    >
+                </div>
+                <!-- Modal -->
+                <div
+                    class="modal fade"
+                    id="sign-out-confirm-modal"
+                    tabindex="-1"
+                    aria-hidden="true"
+                >
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">
+                                    Confirm
+                                </h5>
+                                <button
+                                    type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"
+                                ></button>
+                            </div>
+                            <div class="modal-body">Sign out?</div>
+                            <div class="modal-footer">
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-secondary"
+                                    data-bs-dismiss="modal"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    id="confirm-sign-out"
+                                    type="button"
+                                    class="btn btn-danger"
+                                >
+                                    Sign Out
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+            crossorigin="anonymous"
+        ></script>
+    </body>
 
-<body>
-	<div class="row">
-		<div class="column left">
-			<h2 class="reduceSpace" align="left">
-				Tortuga Trivia Host Dashboard
-			</h2>
-
-			<button id="switchAdminMode" class="bigButton" onclick="switchAdminMode()">Plan</button>
-			<button id="switchGameMode" class="bigButton" onclick="refreshGameMode(true)"></button>
-			<button id="switchUsedMode" class="bigButton" onclick="switchUsedMode()">Used</button>
-			<button class="bigButton" onclick = "googleSignin()">Google Signin</button>
-			<button class="bigButton" onclick = "googleSignout()">Google Signout</button>
-
-			<div id="questionPanel">
-
-				Category: 
-				<select id="catDrop" class="qDrop" onchange="getSubCats(this.value)"></select>
-
-				Round: 
-				<select id="roundDrop" class="qDrop" onchange="showHide(this.value)">
-					<option id="1" value=1>1</option>	
-					<option id="2" value=2>2</option>
-					<option id="3" value=3>3</option>	
-				</select>
-
-				<text id="pointShowHide" style="display: none">
-					Points:
-					<select id="pointDrop" class="qDrop" onchange="getAllQuestion();">
-						<option id="2">2</option>	
-						<option id="3">3</option>	
-						<option id="5">5</option>
-					</select>
-				</text>
-
-				<br>
-
-				<button id="getQ" onclick="getQuestion()">Get Question</button>
-
-				<input id="imgurFile" type="file" class="imgur"  onchange="uploadToImgur();" style="display: none;" accept="image/*" data-max-size="5000"/>
-			  	<text id="imgurReturnUrl" style="display: none;"></text>
-
-
-				<!-- Question -->
-				<h3 style='color:gray'>Question:</h3>
-				<h2 id="question" class="questionDisplay"></h2>
-				<div style="width:80%;">
-					<textarea id="questionInput" class="questionCreation" style="display: none; width:100%;" rows="5" cols="100"></textarea>
-				</div>
-
-				<div id="choiceShowHide" style="display:none">
-					<h3 style='color:gray'>Choices:</h3>
-					<h2 id="choices" class="questionDisplay"></h2>
-					<div style="width:80%;">
-						<textarea id="choicesInput" class="questionCreation" style="display: none; width:100%;" rows="3" cols="100"></textarea>
-					</div>
-				</div>
-
-				<h3 style='color:gray'>Answer:</h3>
-				<h2 id="answer" class="questionDisplay"></h2>
-				<div style="width:80%;">
-					<textarea id="answerInput" class="questionCreation" style="display: none; width:100%;" rows="3" cols="100"></textarea>
-				</div>
-
-				<h3 style='color:gray'>Explanation:</h3>
-				<h2 id="explanation" class="questionDisplay"></h2>
-				<div style="width:80%;">
-					<textarea id="explanationInput" class="questionCreation" style="display: none; width:100%;" rows="3" cols="100"></textarea>
-				</div>
-
-				<h3 style='color:gray'>Source:</h3>
-				<h2 id="source" class="questionDisplay"></h2>
-				<input id="sourceInput" type="text" class="questionCreation" style="display: none;"></input>
-
-				<button id="saveQuestion" class="questionCreation" style="display: none;" onclick="saveQuestion()"> Create Question</button>
-				<button id="resetToCreate" style="display: none;" onclick="resetToCreate()"> Reset To Creation</button>
-
-				<button id="usedButton" style="display: none;" onclick="markUsed()">Mark Used</button>
-
-				<br><br>
-			</div>
-		</div>
-		<div class="column right">
-			<table id="metricsTable" style="width:100%">
-				<caption><b>Metrics</b></caption>
-				<thead>
-					<tr>
-						<th>Category</th>
-						<th style="text-align: center;">Round 1</th> 
-						<th style="text-align: center;">Round 2</th>
-						<th style="text-align: center;">Round 3.2</th>
-						<th style="text-align: center;">Round 3.3</th>
-						<th style="text-align: center;">Round 3.5</th>
-					</tr>
-				</thead>
-				<tbody>
-				</tbody>
-			</table>
-			<br>
-			<div id="subCatTableDiv" style="display: none;">
-				<table id="subCatTable" style="width:100%;">
-					<caption><b>Sub-Categories</b></caption>
-					<tbody>
-					</tbody>
-				</table>
-				<input id="newSubCatName" type="text"></input>
-				<button id="createNewSubCatButton" onclick="createNewSubCat()">Add</button>
-				<button id="markAllUnused" onclick="markAllSubcatsUnused()">Unuse All</button>
-				<br>
-			</div>
-		</div>
-	</div>
-	<div id="questionsTableRow" class="row" style="display: none;">
-		<table id="allQuestionsTable" style="width:100%">
-			<thead>
-				<tr>
-					<th width="40%">Question</th>
-					<th width="30%">Multiple Choice</th> 
-					<th width="30%">Answer</th>
-				</tr>
-			</thead>
-			<tbody>
-			</tbody>
-		</table>
-	</div>
-
-	<div id="successToast">Question Successfully Created!</div>
-	
-</body>
-
-
-
-<script src="https://unpkg.com/querybase@0.6.0"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script src="static/scripts/home.js"></script>
-
-
-
+    <script src="https://unpkg.com/querybase@0.6.0"></script>
+    <script src="static/scripts/home.js"></script>
 </html>
