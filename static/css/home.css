@@ -1,4 +1,7 @@
 /* || NAVBAR */
+.top-nav {
+    z-index: 1000;
+}
 #sign-in-button {
     float: right;
     font-size: 1.95rem;
@@ -11,9 +14,145 @@
     background-size: cover;
 }
 #sign-in-button:hover {
-    color: gray;
+    color: #5573f3;
 }
 #profile-icon {
     font-size: inherit;
     display: flex;
+}
+
+/* || SIDEBAR */
+.sidebar {
+    position: fixed;
+    z-index: 999;
+    align-items: flex-start;
+}
+.sidebar > ul {
+    margin: 0rem 0rem;
+}
+.material-icons {
+    position: relative;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 2rem;
+}
+
+nav.sidebar ul,
+nav.sidebar li {
+    outline: 0;
+    margin: 0;
+    padding: 0;
+}
+.sidebar li:hover > a,
+nav.sidebar li.active > a {
+    color: #fff;
+    background-color: #5573f3;
+}
+nav.sidebar li.selected > a {
+    color: #fff;
+}
+
+nav.sidebar li.selected .material-icons {
+    color: #5573f3;
+}
+
+nav.sidebar li.selected:hover .material-icons {
+    color: #fff;
+}
+
+.sidebar .nav-text,
+.sidebar li > a {
+    font-family: 'Roboto', sans-serif;
+}
+
+.sidebar li > a {
+    border-collapse: collapse;
+    border-spacing: 0;
+    color: white;
+    font-size: 1.03rem;
+    text-decoration: none;
+}
+
+@media (min-width: 35.1em) {
+    .sidebar .material-icons {
+        display: table-cell;
+        width: 5rem;
+        height: 5rem;
+    }
+
+    .sidebar:hover,
+    nav.sidebar.expanded {
+        width: 15em;
+        overflow: visible;
+    }
+
+    .sidebar {
+        top: 0;
+        bottom: 0;
+        height: 100%;
+        left: 0;
+        padding-top: 3.5em;
+        width: 5rem;
+        overflow: hidden;
+        -webkit-transition: width 0.05s linear;
+        transition: width 0.05s linear;
+        -webkit-transform: translateZ(0) scale(1, 1);
+    }
+
+    .sidebar li {
+        position: relative;
+        display: block;
+        width: 18em;
+    }
+    .sidebar li > a {
+        position: relative;
+        display: table;
+        -webkit-transform: translateZ(0) scale(1, 1);
+        -webkit-transition: all 0.1s linear;
+        transition: all 0.1s linear;
+    }
+
+    .sidebar .nav-text {
+        position: relative;
+        display: table-cell;
+        vertical-align: middle;
+        width: 10rem;
+    }
+}
+
+@media (max-width: 35em) {
+    .sidebar {
+        position: fixed;
+        margin: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+    }
+
+    .sidebar ul {
+        display: table;
+        width: 100%;
+    }
+
+    .sidebar li {
+        float: left;
+        width: 25%;
+        list-style-type: none;
+        text-align: center;
+    }
+
+    .sidebar a {
+        display: block;
+        padding: 5px;
+        height: 74px;
+    }
+
+    .sidebar i,
+    .sidebar span {
+        display: block;
+    }
+
+    .sidebar span {
+        font-size: 14px;
+    }
 }
